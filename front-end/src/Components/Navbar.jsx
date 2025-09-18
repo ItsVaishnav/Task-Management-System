@@ -1,26 +1,28 @@
+import { Link } from "react-router-dom";
+
 export default function Navbar({ children }) {
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
         <div className="container-fluid">
-          <a className="navbar-brand d-flex align-items-center" href="/">
+          <Link className="navbar-brand d-flex align-items-center" to="/">
             <img
-              src="https://cdn-icons-png.flaticon.com/512/25/25694.png" // Replace with your icon
+              src="https://cdn-icons-png.flaticon.com/512/25/25694.png" 
               alt="Home"
               width="25"
               height="25"
               className="me-2"
             />
             Home
-          </a>
+          </Link>
 
           <div className="d-flex ms-auto">
-            <a href="/login" className="btn btn-outline-light me-2">
+            <Link to="/login" className="btn btn-outline-light me-2">
               Login
-            </a>
-            <a href="/register" className="btn btn-light text-primary">
+            </Link>
+            <Link to="/register" className="btn btn-light text-primary">
               Register
-            </a>
+            </Link>
           </div>
         </div>
       </nav>
@@ -28,23 +30,35 @@ export default function Navbar({ children }) {
       <div className="d-flex">
         <div
           className="bg-light border-end"
-          style={{ width: "200px", minHeight: "100vh" }}
+          style={{ width: "200px", minHeight: "92vh" }}
         >
+          <h3 className="m-3">Menu</h3>
           <ul className="nav flex-column p-3">
+            
             <li className="nav-item mb-2">
-              <a className="nav-link text-dark" href="/manage">
+              <Link className="nav-link text-dark" to="/">
                 Manage Task
-              </a>
+              </Link>
             </li>
             <li className="nav-item mb-2">
-              <a className="nav-link text-dark" href="/status">
+              <Link className="nav-link text-dark" to="/Managestatus">
                 Status
-              </a>
+              </Link>
             </li>
             <li className="nav-item mb-2">
-              <a className="nav-link text-dark" href="/priority">
+              <Link className="nav-link text-dark" to="/Managepriority">
                 Priority
-              </a>
+              </Link>
+            </li>
+            <li className="nav-item mb-2">
+              <Link className="nav-link text-dark" to="/Managerole">
+                Manage Role
+              </Link>
+            </li>
+            <li className="nav-item mb-2">
+              <Link className="nav-link text-dark" to="/Manageusers">
+                Manage Users
+              </Link>
             </li>
           </ul>
         </div>

@@ -1,19 +1,20 @@
-
 export default function ManageTask() {
   return (
     <div>
       <h2 className="mb-4">Manage Tasks</h2>
 
-      {/* Filters */}
+      <div className="d-flex justify-content-end my-3">
+        <button className="btn btn-primary">+ Add Task</button>
+      </div>
       <div className="d-flex mb-3">
-        <select className="form-select me-2" style={{ maxWidth: "200px" }}>
+        <select className="form-select me-2" style={{ maxWidth: "600px" }}>
           <option>All Assignees</option>
           <option>Anil</option>
           <option>Faizan</option>
           <option>Anuj</option>
         </select>
 
-        <select className="form-select me-2" style={{ maxWidth: "200px" }}>
+        <select className="form-select me-2" style={{ maxWidth: "600px" }}>
           <option>All Statuses</option>
           <option>ToDo</option>
           <option>In-Progress</option>
@@ -21,10 +22,8 @@ export default function ManageTask() {
         </select>
 
         <button className="btn btn-primary">Filter</button>
-        <button className="btn btn-success ms-auto">+ Add Task</button>
       </div>
 
-      {/* Task Table */}
       <table className="table table-bordered">
         <thead className="table-light">
           <tr>

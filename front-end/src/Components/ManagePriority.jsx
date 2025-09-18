@@ -1,7 +1,7 @@
-export default function ManageStatus() {
+export default function ManagePriority() {
   return (
     <div>
-      <h2 className="mb-4">Manage Tasks</h2>
+      <h2 className="mb-4">Manage Priority</h2>
       <div className="d-flex justify-content-end my-3">
         <button className="btn btn-primary">+ Add Task</button>
       </div>

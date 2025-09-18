@@ -1,7 +1,7 @@
-export default function ManageStatus() {
+export default function ManageRole() {
   return (
-    <div>
-      <h2 className="mb-4">Manage Tasks</h2>
+        <div>
+      <h2 className="mb-4">Manage Role</h2>
       <div className="d-flex justify-content-end my-3">
         <button className="btn btn-primary">+ Add Task</button>
       </div>
@@ -44,5 +44,5 @@ export default function ManageStatus() {
         </tbody>
       </table>
     </div>
-  );
+  )
 }
