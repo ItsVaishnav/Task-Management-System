@@ -9,7 +9,7 @@ import java.util.Set;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
     private String name;
 
     // Relationships
@@ -25,11 +25,11 @@ public class Role {
         this.name = rollName;
     }
 
-    public int getR_id() {
+    public Long getR_id() {
         return id;
     }
 
-    public void setR_id(int r_id) {
+    public void setR_id(Long r_id) {
         id = r_id;
     }
 }
