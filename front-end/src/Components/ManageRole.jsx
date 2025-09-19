@@ -1,9 +1,9 @@
 export default function ManageRole() {
   return (
-        <div>
+    <div>
       <h2 className="mb-4">Manage Role</h2>
       <div className="d-flex justify-content-end my-3">
-        <button className="btn btn-primary">+ Add Task</button>
+        <button className="btn btn-primary">+ Add Role</button>
       </div>
       <table className="table table-bordered">
         <thead className="table-light">
@@ -44,5 +44,5 @@ export default function ManageRole() {
         </tbody>
       </table>
     </div>
-  )
+  );
 }

@@ -1,7 +1,10 @@
 package org.management.backend.controller;
 
 import org.management.backend.entity.Task;
+import org.management.backend.entity.User;
 import org.management.backend.repository.TaskRepository;
+import org.management.backend.repository.UserRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,9 +14,11 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 public class TaskController {
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
-    public TaskController(TaskRepository taskRepository) {
+    public TaskController(TaskRepository taskRepository, UserRepository userRepository) {
         this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
     }
 
     // GET /api/tasks?status=1&assignee=2
@@ -32,10 +37,22 @@ public class TaskController {
         return taskRepository.findAll();
     }
 
-    @PostMapping
-    public Task createTask(@RequestBody Task task) {
-        return taskRepository.save(task);
+    // controller/TaskController.java
+    @PostMapping("/tasks")
+    public ResponseEntity<Task> createTask(@RequestBody TaskRequest taskRequest) {
+        User assignee = userRepository.findById(Math.toIntExact(taskRequest.getAssigneeId()))
+                .orElseThrow(() -> new RuntimeException("User not found with id " + taskRequest.getAssigneeId()));
+
+        Task task = new Task();
+        task.setTitle(taskRequest.getTitle());
+        task.setStatus(taskRequest.getStatus());
+        task.setPriority(taskRequest.getPriority());
+        task.setAssignee(assignee);
+
+        Task savedTask = taskRepository.save(task);
+        return ResponseEntity.ok(savedTask);
     }
+
 
     @PutMapping("/{id}")
     public Task updateTask(@PathVariable Long id, @RequestBody Task taskDetails) {

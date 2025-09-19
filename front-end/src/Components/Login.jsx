@@ -35,7 +35,8 @@ export default function Login() {
       console.log("Login Successful", response.data);
 
       // Redirect based on role
-      const role = response.data.role?.toLowerCase();
+      const role = response.data.roles[0]?.toLowerCase();
+      console.log("Role is ", role);
 
       if (role === "superadmin") {
         navigate("/managerole");
