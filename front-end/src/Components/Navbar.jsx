@@ -1,8 +1,10 @@
 import { Link, Outlet } from "react-router-dom";
 import useAuthContext from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
-  const { userData } = useAuthContext();
+  const { userData, setUserData } = useAuthContext();
+  const nnavigate = useNavigate();
 
   // Extract role safely
   let role = "guest"; // default
@@ -10,6 +12,10 @@ export default function Navbar() {
     role = userData.roles[0]; // take the first role
   }
 
+  function handleLogout() {
+    setUserData("");
+    Navigate("/login");
+  }
   return (
     <div className="d-flex flex-column" style={{ minHeight: "100vh" }}>
       {/* Top Navbar */}
@@ -39,9 +45,13 @@ export default function Navbar() {
             )}
             {
               <>
-                <Link to="/logout" className="btn btn-light text-primary">
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="btn btn-primary w-100 mb-3"
+                >
                   Logout
-                </Link>
+                </button>
               </>
             }
           </div>
