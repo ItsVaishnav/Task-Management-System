@@ -1,24 +1,38 @@
 package org.management.backend.controller;
 
+import org.management.backend.entity.Priority;
+import org.management.backend.entity.Status;
 import org.management.backend.entity.Task;
 import org.management.backend.entity.User;
+import org.management.backend.repository.PriorityRepository;
+import org.management.backend.repository.StatusRepository;
 import org.management.backend.repository.TaskRepository;
 import org.management.backend.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/tasks")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TaskController {
-    private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
 
-    public TaskController(TaskRepository taskRepository, UserRepository userRepository) {
+//    private final TaskRepository taskRepository;
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private StatusRepository statusRepository;
+
+    @Autowired
+    private PriorityRepository priorityRepository;
+
+    public TaskController(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
     }
 
     // GET /api/tasks?status=1&assignee=2
@@ -37,22 +51,43 @@ public class TaskController {
         return taskRepository.findAll();
     }
 
-    // controller/TaskController.java
-    @PostMapping("/tasks")
-    public ResponseEntity<Task> createTask(@RequestBody TaskRequest taskRequest) {
-        User assignee = userRepository.findById(Math.toIntExact(taskRequest.getAssigneeId()))
-                .orElseThrow(() -> new RuntimeException("User not found with id " + taskRequest.getAssigneeId()));
 
-        Task task = new Task();
-        task.setTitle(taskRequest.getTitle());
-        task.setStatus(taskRequest.getStatus());
-        task.setPriority(taskRequest.getPriority());
-        task.setAssignee(assignee);
 
-        Task savedTask = taskRepository.save(task);
-        return ResponseEntity.ok(savedTask);
+//    @PostMapping
+//    public Task createTask(@RequestBody Task task) {
+//        // Re-attach managed entities before saving
+//        if (task.getAssignee() != null && task.getAssignee().getId() != null) {
+//            User assignee = userRepository.findById(task.getAssignee().getId())
+//                    .orElseThrow(() -> new RuntimeException("Assignee not found"));
+//            task.setAssignee(assignee); // <-- here
+//        }
+//
+//        if (task.getCreator() != null && task.getCreator().getId() != null) {
+//            User creator = userRepository.findById(task.getCreator().getId())
+//                    .orElseThrow(() -> new RuntimeException("Creator not found"));
+//            task.setCreator(creator); // <-- here
+//        }
+//
+//        if (task.getStatus() != null && task.getStatus().getId() != null) {
+//            Status status = statusRepository.findById(task.getStatus().getId())
+//                    .orElseThrow(() -> new RuntimeException("Status not found"));
+//            task.setStatus(status);
+//        }
+//
+//        if (task.getPriority() != null && task.getPriority().getId() != null) {
+//            Priority priority = priorityRepository.findById(task.getPriority().getId())
+//                    .orElseThrow(() -> new RuntimeException("Priority not found"));
+//            task.setPriority(priority);
+//        }
+//
+//        return taskRepository.save(task);
+//    }
+
+
+    @PostMapping
+    public Task createTask(@RequestBody Task task) {
+        return taskRepository.save(task);
     }
-
 
     @PutMapping("/{id}")
     public Task updateTask(@PathVariable Long id, @RequestBody Task taskDetails) {
