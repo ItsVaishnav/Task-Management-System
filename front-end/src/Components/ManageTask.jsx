@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import useAuthContext from "../context/AuthContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function ManageTask() {
   const [tasks, setTasks] = useState([]);
@@ -37,6 +39,7 @@ export default function ManageTask() {
         setPriorities(prioritiesRes.data);
       } catch (err) {
         console.error(err);
+        toast.error("Failed to fetch options");
       }
     };
     fetchOptions();
@@ -50,6 +53,7 @@ export default function ManageTask() {
       setFilteredTasks(res.data); // initially show all tasks
     } catch (err) {
       console.error("Error fetching tasks:", err);
+      toast.error("Failed to fetch tasks");
     } finally {
       setLoading(false);
     }
@@ -59,7 +63,6 @@ export default function ManageTask() {
     fetchTasks();
   }, []);
 
-  // Handle input change
   const handleChange = (e) => {
     setNewTask({ ...newTask, [e.target.name]: e.target.value });
   };
@@ -75,8 +78,10 @@ export default function ManageTask() {
       setFilteredTasks(updatedTasks);
       setShowAddModal(false);
       setNewTask({ title: "" });
+      toast.success("Task added successfully");
     } catch (err) {
       console.error(err);
+      toast.error("Failed to add task");
     }
   };
 
@@ -95,8 +100,10 @@ export default function ManageTask() {
       setFilteredTasks(updatedTasks);
       setShowEditModal(false);
       setCurrentTask(null);
+      toast.success("Task updated successfully");
     } catch (err) {
       console.error(err);
+      toast.error("Failed to update task");
     }
   };
 
@@ -109,8 +116,10 @@ export default function ManageTask() {
       setFilteredTasks(updatedTasks);
       setShowDeleteModal(false);
       setCurrentTask(null);
+      toast.success("Task deleted successfully");
     } catch (err) {
       console.error(err);
+      toast.error("Failed to delete task");
     }
   };
 
@@ -125,17 +134,20 @@ export default function ManageTask() {
       );
     });
     setFilteredTasks(result);
+    toast.info("Filter applied");
   };
 
   const resetFilter = () => {
     setFilter({ assignee: "", priority: "" });
     setFilteredTasks(tasks);
+    toast.info("Filter reset");
   };
 
   if (loading) return <p>Loading tasks...</p>;
 
   return (
     <div>
+      <ToastContainer position="top-center" autoClose={2000} />
       <h2 className="mb-4">Manage Tasks</h2>
 
       {(role === "superadmin" || role === "admin") && (
@@ -249,7 +261,7 @@ export default function ManageTask() {
         </tbody>
       </table>
 
-      {/* Add Task Modal */}
+      {/* Modals: Add/Edit/View/Delete */}
       {showAddModal && (
         <Modal
           title="Add Task"
@@ -260,217 +272,37 @@ export default function ManageTask() {
         />
       )}
 
-      {/* Edit Task Modal */}
       {showEditModal && currentTask && (
-        <div
-          className="modal show d-block"
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <form onSubmit={handleEditTask}>
-                <div className="modal-header">
-                  <h5 className="modal-title">Edit Task</h5>
-                  <button
-                    type="button" // <-- Important: prevent form submit
-                    className="btn-close"
-                    onClick={() => setShowEditModal(false)}
-                  ></button>
-                </div>
-                <div className="modal-body">
-                  {/* Title */}
-                  <div className="mb-3">
-                    <label className="form-label">Title</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="title"
-                      value={currentTask.title}
-                      onChange={(e) =>
-                        setCurrentTask({
-                          ...currentTask,
-                          title: e.target.value,
-                        })
-                      }
-                      required
-                    />
-                  </div>
-
-                  {/* Assignee */}
-                  <div className="mb-3">
-                    <label className="form-label">Assignee</label>
-                    <select
-                      className="form-select"
-                      value={currentTask.assignee?.id || ""}
-                      onChange={(e) =>
-                        setCurrentTask({
-                          ...currentTask,
-                          assignee: { id: parseInt(e.target.value) },
-                        })
-                      }
-                    >
-                      <option value="">Select Assignee</option>
-                      {users.map((user) => (
-                        <option key={user.id} value={user.id}>
-                          {user.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Status */}
-                  <div className="mb-3">
-                    <label className="form-label">Status</label>
-                    <select
-                      className="form-select"
-                      value={currentTask.status?.id || ""}
-                      onChange={(e) =>
-                        setCurrentTask({
-                          ...currentTask,
-                          status: { id: parseInt(e.target.value) },
-                        })
-                      }
-                    >
-                      <option value="">Select Status</option>
-                      {statuses.map((status) => (
-                        <option key={status.id} value={status.id}>
-                          {status.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Priority */}
-                  <div className="mb-3">
-                    <label className="form-label">Priority</label>
-                    <select
-                      className="form-select"
-                      value={currentTask.priority?.id || ""}
-                      onChange={(e) =>
-                        setCurrentTask({
-                          ...currentTask,
-                          priority: { id: parseInt(e.target.value) },
-                        })
-                      }
-                    >
-                      <option value="">Select Priority</option>
-                      {priorities.map((priority) => (
-                        <option key={priority.id} value={priority.id}>
-                          {priority.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="modal-footer">
-                  <button
-                    type="button" // <-- Important: prevent form submit
-                    className="btn btn-secondary"
-                    onClick={() => setShowEditModal(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button type="submit" className="btn btn-primary">
-                    Save Changes
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
+        <EditModal
+          task={currentTask}
+          setTask={setCurrentTask}
+          users={users}
+          statuses={statuses}
+          priorities={priorities}
+          onClose={() => setShowEditModal(false)}
+          onSubmit={handleEditTask}
+        />
       )}
 
-      {/* View Task Modal */}
       {showViewModal && currentTask && (
-        <div
-          className="modal show d-block"
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">View Task</h5>
-                <button
-                  className="btn-close"
-                  onClick={() => setShowViewModal(false)}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <p>
-                  <strong>Title:</strong> {currentTask.title}
-                </p>
-                <p>
-                  <strong>Assignee:</strong> {currentTask.assignee?.name || "-"}
-                </p>
-                <p>
-                  <strong>Status:</strong> {currentTask.status?.name || "-"}
-                </p>
-                <p>
-                  <strong>Priority:</strong> {currentTask.priority?.name || "-"}
-                </p>
-                <p>
-                  <strong>Created At:</strong> {currentTask.createdAt}
-                </p>
-              </div>
-              <div className="modal-footer">
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => setShowViewModal(false)}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ViewModal task={currentTask} onClose={() => setShowViewModal(false)} />
       )}
 
-      {/* Delete Task Modal */}
       {showDeleteModal && currentTask && (
-        <div
-          className="modal show d-block"
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Delete Task</h5>
-                <button
-                  className="btn-close"
-                  onClick={() => setShowDeleteModal(false)}
-                ></button>
-              </div>
-              <div className="modal-body">
-                Are you sure you want to delete task{" "}
-                <strong>{currentTask.title}</strong>?
-              </div>
-              <div className="modal-footer">
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => setShowDeleteModal(false)}
-                >
-                  Cancel
-                </button>
-                <button className="btn btn-danger" onClick={handleDeleteTask}>
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <DeleteModal
+          task={currentTask}
+          onClose={() => setShowDeleteModal(false)}
+          onDelete={handleDeleteTask}
+        />
       )}
     </div>
   );
 }
 
-// Reusable Modal component
+// Add Task Modal
 function Modal({ title, onClose, onSubmit, data, handleChange }) {
   return (
-    <div
-      className="modal show d-block"
-      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-    >
+    <div className="modal show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
       <div className="modal-dialog">
         <div className="modal-content">
           <form onSubmit={onSubmit}>
@@ -492,11 +324,7 @@ function Modal({ title, onClose, onSubmit, data, handleChange }) {
               </div>
             </div>
             <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={onClose}
-              >
+              <button type="button" className="btn btn-secondary" onClick={onClose}>
                 Cancel
               </button>
               <button type="submit" className="btn btn-primary">
@@ -509,3 +337,5 @@ function Modal({ title, onClose, onSubmit, data, handleChange }) {
     </div>
   );
 }
+
+// You can reuse and add toast inside EditModal, ViewModal, DeleteModal if needed

@@ -3,6 +3,8 @@ import axios from "axios";
 import { useRef } from "react";
 import useAuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
   const emailRef = useRef(null);
@@ -26,11 +28,14 @@ export default function Login() {
       );
 
       if (!response.data) {
+        toast.error("Login failed: No data received");
         return;
       }
 
       // Save user in context
       setUserData(response.data);
+
+      toast.success("Login Successful!");
 
       console.log("Login Successful", response.data);
 
@@ -38,22 +43,28 @@ export default function Login() {
       const role = response.data.roles[0]?.toLowerCase();
       console.log("Role is ", role);
 
-      if (role === "superadmin") {
-        navigate("/managerole");
-      } else if (role === "admin") {
-        navigate("/managestatus");
-      } else if (role === "user") {
-        navigate("/");
-      } else {
-        navigate("/unauthorized"); // fallback
-      }
+      setTimeout(() => {
+        if (role === "superadmin") {
+          navigate("/managerole");
+        } else if (role === "admin") {
+          navigate("/managestatus");
+        } else if (role === "user") {
+          navigate("/");
+        } else {
+          navigate("/unauthorized"); // fallback
+        }
+      }, 1000); // Delay to show toast
     } catch (error) {
       console.error("Error logging in:", error);
+      toast.error(
+        error.response?.data?.message || "Login failed: Server error"
+      );
     }
   }
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-90 bg-light">
+      <ToastContainer position="top-center" autoClose={2000} />
       <div
         className="card shadow p-4"
         style={{ width: "350px", borderRadius: "12px" }}
