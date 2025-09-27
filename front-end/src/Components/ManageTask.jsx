@@ -170,9 +170,9 @@ export default function ManageTask() {
           onChange={(e) => setFilter({ ...filter, assignee: e.target.value })}
         >
           <option value="">All Assignees</option>
-          {tasks.map((task) => (
-            <option key={task.assignee?.id} value={task.assignee?.id}>
-              {task.assignee?.name}
+          {users.map((user) => (
+            <option key={user.id} value={user.id}>
+              {user.name}
             </option>
           ))}
         </select>
@@ -184,9 +184,11 @@ export default function ManageTask() {
           onChange={(e) => setFilter({ ...filter, priority: e.target.value })}
         >
           <option value="">All Priorities</option>
-          <option value="3">Low</option>
-          <option value="2">Medium</option>
-          <option value="1">High</option>
+          {priorities.map((priority) => (
+            <option key={priority.id} value={priority.id}>
+              {priority.name}
+            </option>
+          ))}
         </select>
 
         <button className="btn btn-primary" onClick={applyFilter}>
@@ -212,9 +214,9 @@ export default function ManageTask() {
         </thead>
         <tbody>
           {filteredTasks.length > 0 ? (
-            filteredTasks.map((task) => (
+            filteredTasks.map((task, i) => (
               <tr key={task.id}>
-                <td>{task.id}</td>
+                <td>{i + 1}</td> {/* Serial number from 1 to n */}
                 <td>{task.title}</td>
                 <td>{task.assignee?.name || "-"}</td>
                 <td>{task.status?.name || "-"}</td>
@@ -302,13 +304,20 @@ export default function ManageTask() {
 // Add Task Modal
 function Modal({ title, onClose, onSubmit, data, handleChange }) {
   return (
-    <div className="modal show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+    <div
+      className="modal show d-block"
+      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+    >
       <div className="modal-dialog">
         <div className="modal-content">
           <form onSubmit={onSubmit}>
             <div className="modal-header">
               <h5 className="modal-title">{title}</h5>
-              <button className="btn-close" onClick={onClose}></button>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={onClose}
+              ></button>
             </div>
             <div className="modal-body">
               <div className="mb-3">
@@ -324,7 +333,11 @@ function Modal({ title, onClose, onSubmit, data, handleChange }) {
               </div>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" onClick={onClose}>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={onClose}
+              >
                 Cancel
               </button>
               <button type="submit" className="btn btn-primary">
@@ -338,4 +351,231 @@ function Modal({ title, onClose, onSubmit, data, handleChange }) {
   );
 }
 
-// You can reuse and add toast inside EditModal, ViewModal, DeleteModal if needed
+// Edit Task Modal
+function EditModal({
+  task,
+  setTask,
+  users,
+  statuses,
+  priorities,
+  onClose,
+  onSubmit,
+}) {
+  const handleChange = (e) => {
+    setTask({ ...task, [e.target.name]: e.target.value });
+  };
+
+  return (
+    <div
+      className="modal show d-block"
+      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+    >
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <form onSubmit={onSubmit}>
+            <div className="modal-header">
+              <h5 className="modal-title">Edit Task</h5>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={onClose}
+              ></button>
+            </div>
+            <div className="modal-body">
+              <div className="mb-3">
+                <label className="form-label">Title</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="title"
+                  value={task.title || ""}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Assignee</label>
+                <select
+                  className="form-select"
+                  name="assignee"
+                  value={task.assignee?.id || ""}
+                  onChange={(e) =>
+                    setTask({
+                      ...task,
+                      assignee: users.find(
+                        (u) => u.id === parseInt(e.target.value)
+                      ),
+                    })
+                  }
+                >
+                  <option value="">Select Assignee</option>
+                  {users.map((user) => (
+                    <option key={user.id} value={user.id}>
+                      {user.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Status</label>
+                <select
+                  className="form-select"
+                  name="status"
+                  value={task.status?.id || ""}
+                  onChange={(e) =>
+                    setTask({
+                      ...task,
+                      status: statuses.find(
+                        (s) => s.id === parseInt(e.target.value)
+                      ),
+                    })
+                  }
+                >
+                  <option value="">Select Status</option>
+                  {statuses.map((status) => (
+                    <option key={status.id} value={status.id}>
+                      {status.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Priority</label>
+                <select
+                  className="form-select"
+                  name="priority"
+                  value={task.priority?.id || ""}
+                  onChange={(e) =>
+                    setTask({
+                      ...task,
+                      priority: priorities.find(
+                        (p) => p.id === parseInt(e.target.value)
+                      ),
+                    })
+                  }
+                >
+                  <option value="">Select Priority</option>
+                  {priorities.map((priority) => (
+                    <option key={priority.id} value={priority.id}>
+                      {priority.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={onClose}
+              >
+                Cancel
+              </button>
+              <button type="submit" className="btn btn-primary">
+                Update
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// View Task Modal
+function ViewModal({ task, onClose }) {
+  return (
+    <div
+      className="modal show d-block"
+      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+    >
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">Task Details</h5>
+            <button
+              type="button"
+              className="btn-close"
+              onClick={onClose}
+            ></button>
+          </div>
+          <div className="modal-body">
+            <p>
+              <strong>Title:</strong> {task.title}
+            </p>
+            <p>
+              <strong>Assignee:</strong> {task.assignee?.name || "-"}
+            </p>
+            <p>
+              <strong>Status:</strong> {task.status?.name || "-"}
+            </p>
+            <p>
+              <strong>Priority:</strong> {task.priority?.name || "-"}
+            </p>
+            <p>
+              <strong>Created At:</strong> {task.createdAt}
+            </p>
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={onClose}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Delete Task Modal
+function DeleteModal({ task, onClose, onDelete }) {
+  return (
+    <div
+      className="modal show d-block"
+      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+    >
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">Confirm Delete</h5>
+            <button
+              type="button"
+              className="btn-close"
+              onClick={onClose}
+            ></button>
+          </div>
+          <div className="modal-body">
+            <p>
+              Are you sure you want to delete <strong>{task.title}</strong>?
+            </p>
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="btn btn-danger"
+              onClick={() => {
+                onDelete();
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
