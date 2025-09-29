@@ -40,7 +40,7 @@ export default function ManageUser() {
 
         // 4. Extract unique roles for dropdowns
         const extractedRoles = [
-          ...new Set(userRolesData.map((item) => item.role.name)),
+          ...new Set(userRolesData.map((item) => item.role.rollName)),
         ];
         setRoles(extractedRoles);
 
@@ -227,7 +227,7 @@ export default function ManageUser() {
                     >
                       {roles.map((r) => (
                         <option key={r} value={r}>
-                          {r}
+                          {r}igkjjk
                         </option>
                       ))}
                     </select>

@@ -123,7 +123,7 @@ export default function ManageRole() {
             roles.map((role) => (
               <tr key={role.id}>
                 <td>{role.id}</td>
-                <td>{role.role.rollName}</td>
+                <td>{role.role.name}</td>
                 <td>
                   <button
                     className="btn btn-warning btn-sm me-2"

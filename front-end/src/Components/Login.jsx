@@ -2,7 +2,7 @@ import { FaGoogle, FaFacebook, FaLinkedin } from "react-icons/fa";
 import axios from "axios";
 import { useRef } from "react";
 import useAuthContext from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // ✅ Added Link
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -105,7 +105,16 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="d-flex justify-content-center gap-3">
+        {/* 🔹 Registration Link */}
+        <p className="text-center">
+          Don’t have an account?{" "}
+          <Link to="/register" className="text-decoration-none fw-bold">
+            Register here
+          </Link>
+        </p>
+
+        {/* Social login buttons */}
+        <div className="d-flex justify-content-center gap-3 mt-2">
           <button className="btn btn-outline-danger rounded-circle">
             <FaGoogle />
           </button>
